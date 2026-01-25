@@ -1,0 +1,103 @@
+Создание таблицы:
+
+CREATE TABLE positions (
+    position_id SERIAL PRIMARY KEY,
+    position_name VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE departments (
+    department_id SERIAL PRIMARY KEY,
+    department_name VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    birth_date DATE NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    position_id INTEGER NOT NULL REFERENCES positions(position_id) ON DELETE RESTRICT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE employee_department (
+    employee_id INTEGER NOT NULL REFERENCES employees(employee_id) ON DELETE CASCADE,
+    department_id INTEGER NOT NULL REFERENCES departments(department_id) ON DELETE CASCADE,
+    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (employee_id, department_id)
+);
+CREATE TABLE document_types (
+    type_id SERIAL PRIMARY KEY,
+    type_name VARCHAR(50) NOT NULL UNIQUE, 
+    description TEXT
+);
+CREATE TABLE documents (
+    document_id SERIAL PRIMARY KEY,
+    employee_id INTEGER NOT NULL REFERENCES employees(employee_id) ON DELETE CASCADE,
+    type_id INTEGER NOT NULL REFERENCES document_types(type_id) ON DELETE RESTRICT,
+    document_number VARCHAR(100) NOT NULL,
+    issue_date DATE,
+    issuing_authority VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (employee_id, type_id, document_number)
+);
+CREATE INDEX idx_employees_email ON employees(email);
+CREATE INDEX idx_employees_name ON employees(last_name, first_name);
+CREATE INDEX idx_documents_number ON documents(document_number);
+-----------------------------------------------------------------------------------------
+Задание 1: Поиск сотрудников по характеристике с сортировкой
+Нужно получить список всех сотрудников, чьи документы (любого типа) были выданы в 2015 году или позже.
+
+SELECT first_name, last_name, type_name, document_number, issue_date FROM employees
+INNER JOIN documents ON documents.employee_id = employees.employee_id
+INNER JOIN document_types ON document_types.type_id = documents.type_id
+WHERE EXTRACT(YEAR FROM issue_date) >= 2015
+ORDER BY last_name ASC, issue_date DESC;
+
+Задание 2: Анализ распределения сотрудников по департаментам
+Нужно понять, какие должности представлены в каждом департаменте.
+Напиши запрос, который покажет для каждого департамента и каждой должности внутри него:
+•	Название департамента
+•	Название должности
+•	Количество сотрудников с этой должностью в данном департаменте
+Учти, что сотрудник может работать в нескольких департаментах, в этом случае его нужно учитывать в каждом департаменте, где он работает.
+Если в департаменте нет сотрудников с определённой должностью — такую строку выводить не нужно.
+Отсортируй результат сначала по названию департамента, затем по количеству сотрудников (по убыванию).
+
+SELECT position_name, department_name, COUNT(employees.employee_id) as count_employees  FROM positions
+INNER JOIN employees 
+ON employees.position_id = positions.position_id
+INNER JOIN employee_department
+ON employee_department.employee_id = employees.employee_id
+INNER JOIN departments
+ON departments.department_id = employee_department.department_id
+GROUP BY positions.position_name, departments.department_name
+ORDER BY departments.department_name ASC, count_employees DESC;
+
+Задание 3: Выявление перегруженных и недогруженных департаментов
+Руководство хочет увидеть департаменты с нестандартной загрузкой.
+Найди все департаменты, где количество сотрудников либо больше 10, либо равно 1.
+Для каждого такого департамента выведи:
+•	Название департамента
+•	Общее количество сотрудников в нём
+•	Средний "возраст" сотрудников в годах (разницу между текущей датой и их датой рождения) - округли до целого числа
+•	Количество уникальных должностей в этом департаменте
+Дополнительные условия:
+1.	Департаменты, где количество сотрудников от 2 до 10 включительно, не должны попадать в отчёт.
+2.	Отсортируй результат по количеству сотрудников (по убыванию), а затем по названию департамента.
+
+
+SELECT department_name, COUNT(employees.employee_id) as employee_count,
+ROUND(AVG(EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM employees.birth_date)), 0) as avg_age,
+COUNT(DISTINCT(position_name)) as unique_position
+FROM positions
+INNER JOIN employees 
+ON employees.position_id = positions.position_id
+INNER JOIN employee_department
+ON employee_department.employee_id = employees.employee_id
+INNER JOIN departments
+ON departments.department_id = employee_department.department_id
+GROUP BY department_name
+HAVING COUNT(employees.employee_id) > 10 OR COUNT(employees.employee_id) = 1
+ORDER BY employee_count DESC, department_name ASC;
