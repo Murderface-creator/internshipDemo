@@ -1,8 +1,7 @@
-package com.studying.axenixdemo.entity;
+package com.studying.MyProject.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import javax.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,8 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "employees")
-@Getter
-@Setter
+@Data
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

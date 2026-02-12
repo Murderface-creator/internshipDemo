@@ -1,6 +1,6 @@
-package com.studying.axenixdemo.repository;
+package com.studying.MyProject.repository;
 
-import com.studying.axenixdemo.entity.Employee;
+import com.studying.MyProject.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,12 +14,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> findByLastName(String lastName);
     List<Employee> findByFirstName(String firstName);
 
-    @Query("SELECT e FROM Employee e WHERE e.birthDate < :date")
+    @Query("SELECT e FROM Employee e WHERE e.birthDate > :date")
     List<Employee> findYoungerThan(@Param("date")LocalDate date);
 
-    @Query("SELECT e FROM Employee e WHERE e.birthDate > :date")
+    @Query("SELECT e FROM Employee e WHERE e.birthDate < :date")
     List<Employee> findOlderThan(@Param("date")LocalDate date);
 
     @Query("SELECT e FROM Employee e JOIN e.position p WHERE p.name = :positionName")
     List<Employee> findByPosition(@Param("positionName")String positionName);
+
 }

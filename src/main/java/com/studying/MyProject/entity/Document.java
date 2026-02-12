@@ -1,12 +1,11 @@
-package com.studying.axenixdemo.entity;
+package com.studying.MyProject.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "documents")

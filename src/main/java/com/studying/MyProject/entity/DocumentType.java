@@ -1,6 +1,6 @@
-package com.studying.axenixdemo.entity;
+package com.studying.MyProject.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,18 +8,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "positions")
+@Table(name = "document_types")
 @Getter
 @Setter
-public class Position {
+public class DocumentType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "position_id")
+    @Column(name = "type_id")
     private int id;
-    @Column(name = "position_name")
+    @Column(name = "type_name")
     private String name;
-    @OneToMany(mappedBy = "position")
-    private List<Employee> employees;
+    @Column(name = "description")
+    private String description;
+    @OneToMany(mappedBy = "documentType")
+    private List<Document> documents;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -28,18 +30,20 @@ public class Position {
         createdAt = LocalDateTime.now();
     }
 
-    public Position() {}
+    public DocumentType() {}
 
-    public Position(String name) {
+    public DocumentType(String name, String description) {
         this.name = name;
+        this.description = description;
     }
 
     @Override
     public String toString() {
-        return "Position{" +
+        return "DocumentType{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", employees=" + employees +
+                ", description='" + description + '\'' +
+                ", documents=" + documents +
                 ", createdAt=" + createdAt +
                 '}';
     }

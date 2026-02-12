@@ -1,6 +1,6 @@
-package com.studying.axenixdemo.entity;
+package com.studying.MyProject.entity;
 
-import jakarta.persistence.Embeddable;
+import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
