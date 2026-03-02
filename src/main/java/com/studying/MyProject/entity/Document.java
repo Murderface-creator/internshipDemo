@@ -1,6 +1,6 @@
 package com.studying.MyProject.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +15,7 @@ public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "document_id")
-    private int id;
+    private Long id;
     @Column(name = "document_number")
     private String documentNumber;
     @Column(name = "issue_date")

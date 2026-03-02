@@ -10,17 +10,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByLastName(String lastName);
     List<Employee> findByFirstName(String firstName);
 
     @Query("SELECT e FROM Employee e WHERE e.birthDate > :date")
-    List<Employee> findYoungerThan(@Param("date")LocalDate date);
+    List<Employee> getEmployeeYoungerThan(@Param("date")LocalDate date);
 
     @Query("SELECT e FROM Employee e WHERE e.birthDate < :date")
-    List<Employee> findOlderThan(@Param("date")LocalDate date);
+    List<Employee> getEmployeeOlderThan(@Param("date")LocalDate date);
 
     @Query("SELECT e FROM Employee e JOIN e.position p WHERE p.name = :positionName")
-    List<Employee> findByPosition(@Param("positionName")String positionName);
+    List<Employee> findByPositionName(@Param("positionName")String positionName);
+
+    List<Employee> findEmployeesByEmailEndingWith(@Param("email")String email);
 
 }

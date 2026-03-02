@@ -1,6 +1,6 @@
 package com.studying.MyProject.entity;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,13 +11,13 @@ import java.util.Objects;
 @Getter
 @Setter
 public class EmployeeDepartmentId implements Serializable {
-    private int employeeId;
-    private int departmentId;
+    private Long employeeId;
+    private Long departmentId;
 
     public EmployeeDepartmentId() {
     }
 
-    public EmployeeDepartmentId(int employeeId, int departmentId) {
+    public EmployeeDepartmentId(Long employeeId, Long departmentId) {
         this.employeeId = employeeId;
         this.departmentId = departmentId;
     }

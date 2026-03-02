@@ -1,6 +1,6 @@
 package com.studying.MyProject.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
-    private int id;
+    private Long id;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")

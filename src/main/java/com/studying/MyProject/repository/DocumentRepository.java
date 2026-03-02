@@ -8,9 +8,11 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface DocumentRepository extends JpaRepository<Document, Integer> {
+public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query(value = "SELECT e.lastName as lastName, dt.name as documentName, d.issueDate as issueDate FROM DocumentType dt JOIN dt.documents d JOIN d.employee e WHERE d.issueDate < :date")
     List<DocumentInfo> findEmployeesLastNameWithDocumentsIssueOlderThan(@Param("date") LocalDate date);
+
+
     interface DocumentInfo {
         String getLastName();
         String getDocumentName();

@@ -1,6 +1,8 @@
 package com.studying.MyProject.service;
 
+import com.studying.MyProject.DTO.EmployeeDTO;
 import com.studying.MyProject.entity.Employee;
+import com.studying.MyProject.mapper.EmployeeMapper;
 import com.studying.MyProject.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,62 +14,57 @@ import java.util.List;
 @Transactional
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
+        this.employeeMapper = employeeMapper;
     }
 
-    public List<Employee> getEmployeeByFirstName(String firstName) {
-        System.out.println("Поиск по имени: " + firstName);
+    public List<EmployeeDTO> getEmployeeByFirstName(String firstName) {
         List<Employee> employees = employeeRepository.findByFirstName(firstName);
-        return employees;
+        return employeeMapper.toDTOList(employees);
     }
 
-    public List<Employee> getEmployeeByLastName(String lastName){
-        System.out.println("Поиск по фамилии: " + lastName);
+    public List<EmployeeDTO> getEmployeeByLastName(String lastName){
         List<Employee> employees = employeeRepository.findByLastName(lastName);
-        return employees;
+        employeeMapper.toDTOList(employees);
+        return employeeMapper.toDTOList(employees);
     }
 
-    public List<Employee> getEmployeeYoungerThan(LocalDate date){
-        System.out.println("Поиск младше возраста: " + date);
-        List<Employee> employees = employeeRepository.findYoungerThan(date);
-        return employees;
+    public List<EmployeeDTO> getEmployeeYoungerThan(LocalDate date){
+        List<Employee> employees = employeeRepository.getEmployeeYoungerThan(date);
+        return employeeMapper.toDTOList(employees);
     }
 
-    public List<Employee> getEmployeeOlderThan(LocalDate date){
-        System.out.println("Поиск старше возраста: " + date);
-        List<Employee> employees = employeeRepository.findOlderThan(date);
-        return employees;
+    public List<EmployeeDTO> getEmployeeOlderThan(LocalDate date){
+        List<Employee> employees = employeeRepository.getEmployeeOlderThan(date);
+        return employeeMapper.toDTOList(employees);
     }
 
-    public List<Employee> getEmployeeByPosition(String positionName){
-        System.out.println("Поиск по должности: " + positionName);
-        List<Employee> employees = employeeRepository.findByPosition(positionName);
-        return employees;
+    public List<EmployeeDTO> getEmployeeByPosition(String positionName){
+        List<Employee> employees = employeeRepository.findByPositionName(positionName);
+        return employeeMapper.toDTOList(employees);
 
     }
 
-    public List<Employee> getAllEmployees(){
-        System.out.println("Поиск всех сотрудников");
+    public List<EmployeeDTO> findAllEmployees(){
         List<Employee> employees = employeeRepository.findAll();
-        return employees;
+        return employeeMapper.toDTOList(employees);
     }
 
     public Employee saveEmployee(Employee employee){
-        System.out.println("Сохранение работника");
         return employeeRepository.save(employee);
     }
 
-    public void deleteEmployee(Employee employee){
-        System.out.println("Удаляем работника");
-        employeeRepository.delete(employee);
+    public void deleteEmployeeById(Long id){
+        employeeRepository.deleteById(id);
     }
 
-    public Employee getEmployeeById(int id){
-        System.out.println("Поиск работника по ID: " + id);
-        return employeeRepository.findById(id).get();
-    }
 
+
+    public EmployeeDTO getEmployeeById(Long id){
+        return employeeMapper.toDTO(employeeRepository.findById(id).get());
+    }
 
 }

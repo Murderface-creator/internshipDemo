@@ -1,6 +1,7 @@
 package com.studying.MyProject.entity;
 
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,7 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
-    private int id;
+    private Long id;
     @Column(name = "department_name")
     private String name;
     @OneToMany(mappedBy = "department")
